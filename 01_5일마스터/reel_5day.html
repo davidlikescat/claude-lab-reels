@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root{
+    --clay:#D97757; --clay-deep:#A24E32; --brown:#6E4632;
+    --ink:#2A2521; --muted:#8A7E70; --soft:#B6A998;
+    --bg:#F3EADC; --card:#FFFFFF; --card2:#FBF4EA;
+    --line:#E6D9C6; --chip:#F6EEE1;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Helvetica Neue",Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:var(--sans);-webkit-font-smoothing:antialiased;}
+  body{background:var(--bg);}
+  .reel{width:1080px;}
+
+  /* ===== HOOK (첫 화면 1080x1920) ===== */
+  .hook{height:1920px;background:linear-gradient(160deg,#E5906B 0%,#C2632F 100%);color:#FBF4EA;
+        display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 90px;position:relative;}
+  .hook .mk{width:120px;height:120px;margin-bottom:34px;}
+  .hook .bdg{font-size:30px;font-weight:800;letter-spacing:6px;color:rgba(255,255,255,.85);}
+  .hook h1{font-size:128px;font-weight:800;letter-spacing:-4px;line-height:1.02;margin-top:26px;}
+  .hook h1 .u{color:#FFE6D8;}
+  .hook .sub{font-size:38px;font-weight:600;color:rgba(255,255,255,.9);margin-top:34px;line-height:1.4;}
+  .hook .save{margin-top:54px;font-size:32px;font-weight:800;background:#fff;color:var(--clay-deep);padding:20px 40px;border-radius:50px;}
+  .hook .down{position:absolute;bottom:70px;font-size:30px;font-weight:800;color:rgba(255,255,255,.9);}
+
+  /* ===== SHEET ===== */
+  .sheet{width:1080px;background:var(--bg);padding:60px 52px 56px;color:var(--ink);}
+  .hd{display:flex;justify-content:space-between;align-items:flex-start;}
+  .hd-l{flex:1;}
+  .gbadge{display:inline-block;background:var(--brown);color:#F6EAD9;font-size:16px;font-weight:800;letter-spacing:2px;padding:8px 18px;border-radius:24px;}
+  .basis{margin-top:16px;font-size:18px;font-weight:600;color:var(--muted);}
+  .basis b{color:var(--ink);font-weight:800;}
+  h1.sh{font-size:74px;font-weight:800;letter-spacing:-3px;line-height:1;margin-top:14px;}
+  h1.sh .c{color:var(--clay);}
+  .tagline{font-size:23px;font-weight:600;color:var(--muted);margin-top:16px;}
+  .hd-r{width:280px;display:flex;flex-direction:column;align-items:flex-end;gap:14px;}
+  .mlist{display:flex;flex-direction:column;gap:9px;width:100%;align-items:flex-end;}
+  .mrow{display:flex;align-items:center;gap:9px;background:var(--card);border:1.5px solid var(--line);border-radius:24px;padding:8px 16px;font-size:17px;font-weight:700;width:212px;}
+  .mrow .dot{width:9px;height:9px;border-radius:50%;background:var(--clay);}
+  .mrow .tg{margin-left:auto;font-size:14px;font-weight:700;color:var(--soft);}
+  .mark{width:118px;height:118px;}
+
+  .sec{margin-top:46px;}
+  .sectitle{display:flex;align-items:center;gap:14px;}
+  .sectitle .t{font-size:32px;font-weight:800;color:var(--clay-deep);letter-spacing:-.5px;white-space:nowrap;}
+  .sectitle .s{font-size:18px;font-weight:600;color:var(--muted);white-space:nowrap;}
+  .sectitle .rule{flex:1;height:2px;background:var(--line);border-radius:2px;}
+
+  .road{margin-top:30px;position:relative;}
+  .road-line{position:absolute;top:46px;left:8%;right:8%;height:3px;background:var(--line);z-index:0;}
+  .nodes{display:flex;position:relative;z-index:1;}
+  .node{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 6px;}
+  .ncirc{width:92px;height:92px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card);border:3px solid var(--line);}
+  .ncirc svg{width:42px;height:42px;stroke:var(--clay);stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .node.on .ncirc{background:var(--clay);border-color:var(--clay);box-shadow:0 10px 24px rgba(217,119,87,.32);}
+  .node.on .ncirc svg{stroke:#fff;}
+  .node.grad .ncirc{background:var(--brown);border-color:var(--brown);}
+  .node.grad .ncirc svg{stroke:#F6EAD9;}
+  .nday{font-size:17px;font-weight:800;letter-spacing:1.5px;color:var(--clay);margin-top:18px;}
+  .ntitle{font-size:24px;font-weight:800;color:var(--ink);margin-top:6px;letter-spacing:-.5px;}
+  .nmiss{font-size:16.5px;font-weight:600;color:var(--muted);margin-top:7px;line-height:1.3;min-height:44px;}
+  .nchk{margin-top:10px;display:inline-flex;align-items:center;gap:7px;background:var(--chip);border:1px solid var(--line);border-radius:18px;padding:8px 13px;font-size:14.5px;font-weight:700;color:var(--brown);}
+  .nchk .box{width:14px;height:14px;border:2px solid var(--clay);border-radius:3px;flex:0 0 auto;}
+
+  .f4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px;}
+  .fcard{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:24px 20px;display:flex;flex-direction:column;position:relative;}
+  .fic{width:54px;height:54px;border-radius:14px;background:var(--clay);display:flex;align-items:center;justify-content:center;margin-bottom:15px;}
+  .fic svg{width:28px;height:28px;stroke:#fff;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .fname{font-size:23px;font-weight:800;color:var(--ink);letter-spacing:-.5px;}
+  .frow{margin-top:14px;}
+  .flab{font-size:14px;font-weight:800;color:var(--clay);}
+  .ftxt{font-size:17px;font-weight:600;color:var(--ink);margin-top:2px;line-height:1.3;}
+  .fhow{margin-top:auto;padding-top:15px;border-top:1px dashed var(--line);font-size:15.5px;font-weight:800;color:var(--brown);}
+  .frow:last-of-type{margin-bottom:15px;}
+  .ftag{position:absolute;top:18px;right:16px;font-size:12.5px;font-weight:800;color:var(--clay-deep);background:#F7E4D7;border-radius:14px;padding:5px 10px;}
+
+  .vs{margin-top:30px;border-radius:16px;overflow:hidden;border:1.5px solid var(--line);}
+  .vs table{width:100%;border-collapse:collapse;}
+  .vs th{background:var(--brown);color:#F6EAD9;font-size:20px;font-weight:800;text-align:left;padding:16px 24px;}
+  .vs th:first-child{width:210px;background:var(--clay-deep);}
+  .vs td{padding:16px 24px;font-size:19px;font-weight:600;color:var(--ink);border-top:1px solid var(--line);background:var(--card);}
+  .vs td:first-child{font-weight:800;color:#fff;background:var(--clay-deep);}
+  .vs tr.hi td{background:var(--card2);font-weight:800;}
+  .vs tr.hi td:first-child{background:var(--clay-deep);}
+
+  .subline{font-size:19px;font-weight:600;color:var(--ink);margin-top:20px;}
+  .subline b{color:var(--clay-deep);font-weight:800;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px;}
+  .ccard{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:22px 24px;display:flex;gap:16px;align-items:center;}
+  .cic{width:54px;height:54px;border-radius:14px;background:var(--brown);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .cic svg{width:27px;height:27px;stroke:#F6EAD9;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .cttl{font-size:21px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:9px;}
+  .cmini{font-size:12px;font-weight:800;color:var(--clay-deep);background:#F7E4D7;border-radius:12px;padding:3px 9px;}
+  .cdesc{font-size:16px;font-weight:600;color:var(--muted);margin-top:4px;line-height:1.35;}
+
+  .grid2b{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px;}
+  .box{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:26px 28px;}
+  .box.warn{background:var(--card2);border-color:#EAD2BE;}
+  .boxttl{font-size:24px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:10px;}
+  .boxttl svg{width:26px;height:26px;stroke:var(--clay);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .ck{margin-top:16px;}
+  .ck li{list-style:none;display:flex;align-items:center;gap:11px;font-size:18px;font-weight:600;color:var(--ink);padding:7px 0;}
+  .ck li .box-i{width:18px;height:18px;border:2px solid var(--clay);border-radius:4px;flex:0 0 auto;}
+  .grad-pill{margin-top:16px;text-align:center;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:13px;font-size:18px;font-weight:800;color:var(--brown);}
+  .rem{margin-top:14px;}
+  .rem .it{padding:15px 0;border-top:1px dashed var(--line);}
+  .rem .it:first-child{border-top:none;}
+  .rem .rt{font-size:20px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:9px;}
+  .rem .rt svg{width:22px;height:22px;stroke:var(--clay);stroke-width:2;fill:none;}
+  .rem .rd{font-size:16.5px;font-weight:600;color:var(--muted);margin-top:4px;}
+  .rem .rd b{color:var(--clay-deep);font-weight:800;}
+
+  /* ===== CTA (마지막 화면 1080x1920) ===== */
+  .cta-hero{height:1920px;background:linear-gradient(157deg,#E5906B 0%,#C2632F 100%);color:#FBF4EA;
+            display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 80px;}
+  .cta-hero .mk{width:108px;height:108px;margin-bottom:24px;}
+  .cta-hero .k{font-size:30px;font-weight:800;letter-spacing:5px;color:rgba(255,255,255,.82);}
+  .cta-hero h2{font-size:92px;font-weight:800;letter-spacing:-3px;line-height:1.05;margin-top:22px;}
+  .cta-hero h2 .u{color:#FFE6D8;}
+  .cta-get{margin-top:48px;display:flex;flex-direction:column;gap:22px;align-items:flex-start;}
+  .cta-get .g{display:flex;align-items:center;gap:20px;font-size:34px;font-weight:600;color:#FFF3EC;}
+  .cta-get .g .ic{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .cta-get .g .ic svg{width:26px;height:26px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .cta-box{margin-top:64px;background:#fff;border-radius:26px;padding:40px 56px;font-size:44px;font-weight:800;color:var(--ink);box-shadow:0 24px 56px rgba(120,50,25,.3);display:flex;align-items:center;gap:18px;}
+  .cta-box .kw{background:var(--clay);color:#fff;padding:8px 24px;border-radius:14px;}
+  .cta-foot{margin-top:46px;font-size:30px;font-weight:800;color:rgba(255,255,255,.9);}
+</style>
+</head>
+<body>
+<div class="reel">
+
+  <!-- ===== HOOK ===== -->
+  <div class="hook">
+    <svg class="mk" viewBox="-50 -50 100 100"><g fill="#FBF4EA">
+      <path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(45)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(90)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(135)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(180)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(225)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(270)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(315)"/>
+    </g></svg>
+    <div class="bdg">5-DAY MASTERY</div>
+    <h1>클로드,<br><span class="u">5일</span>이면<br>끝납니다</h1>
+    <div class="sub">하루 한 미션으로<br>거의 모든 기능 마스터</div>
+    <div class="save">🔖 저장 필수</div>
+    <div class="down">아래로 ↓</div>
+  </div>
+
+  <!-- ===== SHEET ===== -->
+  <div class="sheet">
+    <div class="hd">
+      <div class="hd-l">
+        <span class="gbadge">GUIDE · 5-DAY MASTERY</span>
+        <div class="basis">기준 <b>2026.06</b> &nbsp;|&nbsp; 최신 모델 <b>Opus 4.8 / Sonnet 4.6 / Haiku 4.5</b></div>
+        <h1 class="sh">클로드 <span class="c">5일</span> 마스터</h1>
+        <div class="tagline">거의 모든 기능을 5일 만에 익히는 실전 가이드 — 하루 한 미션</div>
+      </div>
+      <div class="hd-r">
+        <svg class="mark" viewBox="-50 -50 100 100"><g fill="#D97757">
+          <path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(45)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(90)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(135)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(180)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(225)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(270)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(315)"/>
+        </g></svg>
+        <div class="mlist">
+          <div class="mrow"><span class="dot"></span><span class="nm">Opus 4.8</span><span class="tg">강력</span></div>
+          <div class="mrow"><span class="dot" style="background:#C77F5C;"></span><span class="nm">Sonnet 4.6</span><span class="tg">균형</span></div>
+          <div class="mrow"><span class="dot" style="background:#E0B49C;"></span><span class="nm">Haiku 4.5</span><span class="tg">빠름</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sectitle"><span class="t">5일 로드맵</span><span class="s">오늘의 미션 하나씩만 체크</span><span class="rule"></span></div>
+      <div class="road">
+        <div class="road-line"></div>
+        <div class="nodes">
+          <div class="node on"><div class="ncirc"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></div><div class="nday">DAY 1</div><div class="ntitle">기본 세팅</div><div class="nmiss">요금제·모델·화면</div><div class="nchk"><span class="box"></span>모델 3종 비교</div></div>
+          <div class="node"><div class="ncirc"><svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></div><div class="nday">DAY 2</div><div class="ntitle">개인화 설정</div><div class="nmiss">내 정보·지침 작성</div><div class="nchk"><span class="box"></span>지침 박아두기</div></div>
+          <div class="node on"><div class="ncirc"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div><div class="nday">DAY 3</div><div class="ntitle">핵심 기능</div><div class="nmiss">웹검색·연구·코드·Artifacts</div><div class="nchk"><span class="box"></span>4기능 한 번씩</div></div>
+          <div class="node"><div class="ncirc"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div><div class="nday">DAY 4</div><div class="ntitle">자동화·연결</div><div class="nmiss">프로젝트·스킬·MCP</div><div class="nchk"><span class="box"></span>앱 1개 연결</div></div>
+          <div class="node grad"><div class="ncirc"><svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/></svg></div><div class="nday">DAY 5</div><div class="ntitle">위임·졸업</div><div class="nmiss">코워크·코드·루틴</div><div class="nchk"><span class="box"></span>업무 하나 위임</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sectitle"><span class="t">핵심 기능 4종</span><span class="s">무엇을 · 언제 · 어떻게 켜나</span><span class="rule"></span></div>
+      <div class="f4">
+        <div class="fcard"><div class="fic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div><div class="fname">웹 검색</div><div class="frow"><div class="flab">무엇을</div><div class="ftxt">최신 정보 검색</div></div><div class="frow"><div class="flab">이럴 때</div><div class="ftxt">오늘 뉴스·최신 가격</div></div><div class="fhow">켜는 법 · 입력창 '+'</div></div>
+        <div class="fcard"><div class="ftag">토큰↑ 주의</div><div class="fic"><svg viewBox="0 0 24 24"><path d="M12 3l2.1 5.2L19 9l-4 3.5 1.2 5.5L12 15l-4.2 3 1.2-5.5L5 9l4.9-.8z"/></svg></div><div class="fname">연구</div><div class="frow"><div class="flab">무엇을</div><div class="ftxt">여러 출처 심층 조사</div></div><div class="frow"><div class="flab">이럴 때</div><div class="ftxt">보고서·시장조사</div></div><div class="fhow">켜는 법 · 입력창 '+'</div></div>
+        <div class="fcard"><div class="fic"><svg viewBox="0 0 24 24"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13 5l-2 14"/></svg></div><div class="fname">코드 실행</div><div class="frow"><div class="flab">무엇을</div><div class="ftxt">코드 실행·결과 파일</div></div><div class="frow"><div class="flab">이럴 때</div><div class="ftxt">데이터 분석·차트</div></div><div class="fhow">켜는 법 · 설정 &gt; 기능</div></div>
+        <div class="fcard"><div class="fic"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 17h6"/></svg></div><div class="fname">Artifacts</div><div class="frow"><div class="flab">무엇을</div><div class="ftxt">문서·앱·시각화</div></div><div class="frow"><div class="flab">이럴 때</div><div class="ftxt">글·웹앱·다이어그램</div></div><div class="fhow">켜는 법 · 자동 / 명령</div></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sectitle"><span class="t">프로젝트 vs 스킬</span><span class="s">반복 작업을 묶는 두 가지 방식</span><span class="rule"></span></div>
+      <div class="vs"><table>
+        <tr><th>구분</th><th>프로젝트</th><th>스킬</th></tr>
+        <tr><td>저장하는 것</td><td>맥락·자료·지침</td><td>작업하는 방법(절차·규칙)</td></tr>
+        <tr><td>적용 범위</td><td>그 프로젝트 안에서만</td><td>모든 대화에서 자동 호출</td></tr>
+        <tr class="hi"><td>비유</td><td>자료 모인 작업방</td><td>꺼내 쓰는 매뉴얼·레시피</td></tr>
+        <tr><td>호출 방식</td><td>방에 들어가 대화</td><td>요청과 맞으면 자동</td></tr>
+      </table></div>
+    </div>
+
+    <div class="sec">
+      <div class="sectitle"><span class="t">연결하고, 위임하라</span><span class="s">내 도구와 잇고, 작업을 맡긴다</span><span class="rule"></span></div>
+      <div class="subline">조언하는 <b>컨설턴트(채팅)</b> &nbsp;vs&nbsp; 직접 만지는 <b>작업자(코워크·코드)</b></div>
+      <div class="grid2">
+        <div class="ccard"><div class="cic"><svg viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M7 8h10v3a5 5 0 0 1-10 0z"/><path d="M12 16v6"/></svg></div><div><div class="cttl">커넥터(MCP) <span class="cmini">권한</span></div><div class="cdesc">Gmail·드라이브·노션 → 대화 안에서 검색·요약</div></div></div>
+        <div class="ccard"><div class="cic"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5M3 8v5M21 8v5"/></svg></div><div><div class="cttl">Cowork</div><div class="cdesc">여러 단계 자동 처리 — 업무 에이전트</div></div></div>
+        <div class="ccard"><div class="cic"><svg viewBox="0 0 24 24"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg></div><div><div class="cttl">Claude Code</div><div class="cdesc">파일 직접 수정·대량 반복 (터미널)</div></div></div>
+        <div class="ccard"><div class="cic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div><div><div class="cttl">확장 연결 <span class="cmini">BETA</span></div><div class="cdesc">Chrome·Excel·PPT에서 바로 채팅</div></div></div>
+      </div>
+    </div>
+
+    <div class="grid2b">
+      <div class="box">
+        <div class="boxttl"><svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/></svg> 나만의 클로드 루틴</div>
+        <ul class="ck">
+          <li><span class="box-i"></span>반복 작업 1개를 프로젝트로</li>
+          <li><span class="box-i"></span>내 상황·맥락을 Claude 지침에</li>
+          <li><span class="box-i"></span>자주 쓰는 앱 1~2개 커넥터 연결</li>
+          <li><span class="box-i"></span>업무 하나를 Cowork·Code에 위임</li>
+          <li><span class="box-i"></span>조사할 땐 웹 검색 ON</li>
+          <li><span class="box-i"></span>중요한 답은 출처로 검증</li>
+        </ul>
+        <div class="grad-pill">6개 모두 채우면 — 졸업</div>
+      </div>
+      <div class="box warn">
+        <div class="boxttl"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg> 꼭 기억할 3가지</div>
+        <div class="rem">
+          <div class="it"><div class="rt"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>환각</div><div class="rd">그럴듯해도 틀릴 수 있음 → <b>출처 확인</b></div></div>
+          <div class="it"><div class="rt"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>최신성</div><div class="rd">학습 이후 정보는 모름 → <b>웹 검색 ON</b></div></div>
+          <div class="it"><div class="rt"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>검토 책임</div><div class="rd">최종 책임은 사용자 → <b>발행·전송 전 확인</b></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CTA ===== -->
+  <div class="cta-hero">
+    <svg class="mk" viewBox="-50 -50 100 100"><g fill="#FBF4EA">
+      <path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(45)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(90)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(135)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(180)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(225)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(270)"/><path d="M0-46C3-22 3-16 0-11C-3-16-3-22 0-46Z" transform="rotate(315)"/>
+    </g></svg>
+    <div class="k">전체 가이드</div>
+    <h2>고화질 PDF로<br><span class="u">드릴게요</span></h2>
+    <div class="cta-get">
+      <div class="g"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-11"/></svg></span>5일 체크리스트 (졸업 6관문)</div>
+      <div class="g"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-11"/></svg></span>기능별 '켜는 법' + 비교표</div>
+      <div class="g"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-11"/></svg></span>꼭 기억할 3가지</div>
+    </div>
+    <div class="cta-box">댓글 <span class="kw">클로드</span> → DM</div>
+    <div class="cta-foot">@claude_lab.kr · 저장 🔖 + 팔로우</div>
+  </div>
+
+</div>
+</body>
+</html>
